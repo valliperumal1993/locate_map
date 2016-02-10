@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?sensor=false">
+    </script>
+    <script type="text/javascript">
+      
+	function callback(position) {
+   document.getElementById('latitude').innerHTML = position.coords.latitude;
+   document.getElementById('longitude').innerHTML = position.coords.longitude;
+}
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+		
+   navigator.geolocation.getCurrentPosition(callback);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+ function showPosition(position) {
+ 
+   var coordinates = [
+ {latitude:13.0342, longitude:80.2301,role:"D",id:1}, 
+ {latitude:13.0780, longitude:80.2616,role:"P",id:2},
+ {latitude:13.0267, longitude:80.2455,role:"D",id:3}, 
+ {latitude:13.0690, longitude:80.2745,role:"P",id:4}
+ ];
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    latlon = new google.maps.LatLng(lat, lon);
+    var latlongi=[];
+	 latlond = new google.maps.LatLng(13.0122,80.2031);//office's latitude and longitude
+	
+    for (var i = coordinates.length - 1; i >= 0; i--) {
+         latlongi[i]=new google.maps.LatLng(coordinates[i].latitude,coordinates[i].longitude);
+     };
+
+    mapholder = document.getElementById('mapholder');
+    mapholder.style.height = '650px';
+    mapholder.style.width = '1000px';
+ 
+    var myOptions = {
+    center:latlon,zoom:14,
+    mapTypeId:google.maps.MapTypeId.ROADMAP,
+    mapTypeControl:false,
+    navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
+    }
+   var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
+
+var marker = new google.maps.Marker({position:latlond,map:map,title:"office!"});
+var marker_cur = new google.maps.Marker({icon: {
+         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+         strokeColor: "black",
+         scale: 3},position:latlon,map:map,title:"I am here"});
+var marker1=[];
+	    for (var i = 0; i < coordinates.length; i++) 
+    {
+         if(coordinates[i].role=="D")
+            {
+        new google.maps.Marker({icon: {
+        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+        strokeColor: "blue",
+        scale: 3},
+        position:latlongi[i],map:map,title:"Driver's id "+coordinates[i].id});
+        }
+
+         else
+         {
+         new google.maps.Marker({icon: {
+         path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+         strokeColor: "green",
+         scale: 3},
+         position:latlongi[i],map:map,title:"Passenger's id "+coordinates[i].id});
+          }
+//};
+  };
+}
+ function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out."
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred."
+            break;
+    }
+} </script>
+  </head>
+  <body>
+
+	<center><button onclick="getLocation()">get location</button></center>	
+    <br/>
+	
+<!--Latitude: <span id="latitude"></span>       <br/>
+        Longitude: <span id="longitude"></span>-->
+<div id="mapholder"></div>
+</body>
+</html>
